@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>ESP32 Dashboard</title>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@main/bundles/datastar.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2em;
+            line-height: 1.5;
+        }
+
+        h1 {
+            margin-bottom: 1em;
+        }
+
+        .section {
+            margin-bottom: 2em;
+            padding: 1em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            max-width: 400px;
+        }
+
+        .section img {
+            max-width: 100%;
+            display: block;
+            margin-top: 1em;
+        }
+
+        .controls button {
+            margin: 0.25em 0.5em 0.25em 0;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 0.5em;
+            margin-right: 0.5em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>ESP32 Dashboard</h1>
+
+    <div class="section" id="status"
+        data-signals='{
+            "timestamp":0,
+            "isPeriodic":false,
+            "lightSensor":0,
+            "button1_pressed":false,
+            "button2_pressed":false,
+            "isPlayingAudio":false,
+            "imageUrl":"https://placeholdit.com/256x256/dddddd/999999"
+        }'
+        data-connect="/events"
+        data-on-load="@get('/state')">
+
+        <p><strong>Timestamp:</strong> <span data-text="$timestamp"></span></p>
+        <p><strong>Periodic Update:</strong> <span data-text="$isPeriodic"></span></p>
+        <p><strong>Light Sensor:</strong> <span data-text="$lightSensor"></span></p>
+        <p><strong>Button 1 Pressed:</strong> <span data-text="$button1_pressed"></span></p>
+        <p><strong>Button 2 Pressed:</strong> <span data-text="$button2_pressed"></span></p>
+        <p><strong>Playing Audio:</strong> <span data-text="$isPlayingAudio"></span></p>
+
+        <img id="camera" data-attr-src="$imageUrl" alt="Camera image" />
+        <button data-on-click="@post('/take_image')">📷 Take Image</button>
+    </div>
+
+    <div class="section">
+        <p><strong>Send TTS Message</strong></p>
+        <input type="text" placeholder="Enter message..." data-bind="messageText" />
+        <button data-on-click="@post('/play_tts', {body: $messageText})">Send</button>
+    </div>
+
+    <div class="section">
+        <p><strong>Spiel eine zufällige Begrüßung</strong></p>
+        <button data-on-click="@post('/greeting')">Play Greeting</button>
+    </div>
+
+    <div class="section controls">
+        <p><strong>LED Controls</strong></p>
+        <button data-on-click="@post('/led/orange/on')">Orange LED ON</button>
+        <button data-on-click="@post('/led/orange/off')">Orange LED OFF</button>
+        <button data-on-click="@post('/led/red/on')">Red LED ON</button>
+        <button data-on-click="@post('/led/red/off')">Red LED OFF</button>
+    </div>
+
+</body>
+
+</html>
